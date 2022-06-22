@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for elereg module.
+ */
+
+use Drupal\Core\Datetime\DrupalDateTime;
+
+/**
+ * Implements hook_form_alter().
+ */
+function elereg_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
+{
+    if (($form_id == 'views_exposed_form') && ($form['#id'] == 'views-exposed-form-registrations-page-1')) {
+        $form['#attached']['library'][] = 'elereg/elereg_admin';
+        $form['dt_wrapper']['dt']['max']['#type'] = $form['dt_wrapper']['dt']['min']['#type'] = 'datetime';
+        $form['dt_wrapper']['dt']['max']['#date_date_element'] = $form['dt_wrapper']['dt']['min']['#date_date_element'] = 'date';
+        $form['dt_wrapper']['dt']['max']['#date_time_element'] = $form['dt_wrapper']['dt']['min']['#date_time_element'] = 'time';
+        $form['dt_wrapper']['dt']['max']['#date_date_format'] = $form['dt_wrapper']['dt']['min']['#date_date_format'] = 'd.m.Y';
+        if (!count($form_state->getUserInput())) {
+            $day = time();
+            $curDay = intval(date('w', $day)) - 1;
+            $startDate = DrupalDateTime::createFromTimestamp(strtotime('-' . $curDay . ' days', $day))->format('Y-m-d') . ' 00:00:00';
+            $stopDate = DrupalDateTime::createFromTimestamp(strtotime('+' . (6 - $curDay) . ' days', $day))->format('Y-m-d') . ' 23:59:59';
+            $startDate = DrupalDateTime::createFromFormat('Y-m-d H:i:s',$startDate);
+            $stopDate = DrupalDateTime::createFromFormat('Y-m-d H:i:s',$stopDate);
+            $form['dt_wrapper']['dt']['min']['#value']['object'] = $startDate;
+            $form['dt_wrapper']['dt']['min']['#value']['date'] = $startDate->format('Y-m-d');
+            $form['dt_wrapper']['dt']['min']['#value']['time'] = $startDate->format('H:i:s');
+            $form['dt_wrapper']['dt']['max']['#value']['object'] = $stopDate;
+            $form['dt_wrapper']['dt']['max']['#value']['date'] = $stopDate->format('Y-m-d');
+            $form['dt_wrapper']['dt']['max']['#value']['time'] = $stopDate->format('H:i:s');
+        }
+    }
+
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function elereg_form_node_holidays_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
+{
+    $form['#attached']['library'][] = 'elereg/elereg_admin';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function elereg_form_node_holidays_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
+{
+    $form['#attached']['library'][] = 'elereg/elereg_admin';
+}
+
+
+function elereg_form_views_exposed_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
+{
+    $view_ids = ['YOUR_VIEW_ID'];
+    if (($form_id == 'views_exposed_form') && in_array($form_state->get('view')->id(), $view_ids)) {
+        //        $form['field_new_used']['#attributes']['disabled'] = 'disabled';
+        dpm($form);
+    }
+}
+

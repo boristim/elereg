@@ -1,0 +1,4 @@
+administer elereg configuration:
+  title: 'Administer elereg configuration'
+  description: 'Optional description.'
+  restrict access: true

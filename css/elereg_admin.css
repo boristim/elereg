@@ -1,0 +1,27 @@
+html body #views-exposed-form-registrations-page-1 #edit-dt-wrapper h4 {
+  display: none;
+}
+html body #views-exposed-form-registrations-page-1 #edit-dt-wrapper .container-inline {
+  display: inline-block;
+}
+html body #views-exposed-form-registrations-page-1 #edit-dt-wrapper .form-item-dt-max-time,
+html body #views-exposed-form-registrations-page-1 #edit-dt-wrapper .form-item-dt-min-time {
+  display: none;
+}
+html body form#elereg-settings > .fieldgroup > .fieldset-wrapper .fieldgroup .fieldset-wrapper {
+  display: flex;
+  flex-flow: row;
+  height: 5em;
+  flex-basis: 30%;
+}
+html body form#elereg-settings > .fieldgroup > .fieldset-wrapper .fieldgroup .fieldset-wrapper h4 {
+  line-height: 4em;
+  margin: 0 0.5em 0 0;
+  min-width: 150px;
+  text-align: right;
+}
+html body form#elereg-settings > .fieldgroup > .fieldset-wrapper .fieldgroup .fieldset-wrapper .container-inline {
+  margin-right: 2em;
+}
+
+/*# sourceMappingURL=elereg_admin.css.map */
