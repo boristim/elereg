@@ -115,12 +115,12 @@ class EleregController extends ControllerBase
             }
         }
         $curTime = time();
-        $lunchFrom = str_replace(':','',$this->settings['lunch_from']);
-        $lunchTo = str_replace(':','',$this->settings['lunch_end']);
+        $lunchFrom = str_replace(':', '', $this->settings['lunch_from']);
+        $lunchTo = str_replace(':', '', $this->settings['lunch_end']);
         for ($timeStamp = $begin; $timeStamp < $end; $timeStamp += ($this->settings['interval'] * 60)) {
             $time = DrupalDateTime::createFromFormat($formatYmdHis, $beginDay . ' ' . DrupalDateTime::createFromTimestamp($timeStamp)->format($formatHis));
-            $_time = $time->format('Hi').'00';
-            if(($_time >= $lunchFrom) && ($_time <= $lunchTo) ){
+            $_time = $time->format('Hi') . '00';
+            if (($_time >= $lunchFrom) && ($_time <= $lunchTo)) {
                 continue;
             }
             $tmp['t'] = $time->format('H:i');
@@ -253,7 +253,7 @@ class EleregController extends ControllerBase
         $ret = [];
         $terms = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree(self::VOC_SERVICES);
         foreach ($terms as $term) {
-            if($term->status) {
+            if ($term->status) {
                 $ret[] = [
                     'id' => $term->tid,
                     'name' => $term->name,
@@ -289,7 +289,11 @@ class EleregController extends ControllerBase
             $ret['status'] = 'error';
             return $ret;
         }
-        $tel = mb_substr(preg_replace('/\D/', '', $values['tel']), 0, 10);
+        $tel = preg_replace('/\D/', '', $values['tel']);
+        $telLen = mb_strlen($tel);
+        if ($telLen > 10) {
+            $tel = mb_substr($tel, $telLen - 10, 10);
+        }
         $fio = mb_substr($values['fio'], 0, 254);
         $title = "$tel " . $date->format('Y-m-d H:i');
         $date->sub(new DateInterval('PT5H'));

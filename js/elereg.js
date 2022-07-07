@@ -162,7 +162,7 @@
 
             this.root.innerHTML =
                 `<div class="elereg-element-fio"><input ${fioVal} type="text" name="fio" placeholder="Введите вашу фамилию и имя" required><br>
-<input type="text" name="tel" ${telVal} placeholder="Укажите номер телефона" required><br>
+<input type="text" name="tel" maxlength="11" ${telVal} placeholder="Укажите номер телефона" required><br>
 <label><input type="checkbox" name="confidence">Я принимаю ответственность за правильность предоставленных персональных данных и <a href="/confidence" target="_blank">даю согласие</a> на их обработку.</label><br>
 <button id="elereg-submit">Забронировать время</button>
 </div>`;
@@ -175,7 +175,7 @@
             let dow = {}
             let BreakException = {}
             try {
-                this.data.dates.forEach((week) => {
+                this.data['dates'].forEach((week) => {
                     return week.forEach((_dow) => {
                         if (_dow.d === day) {
                             dow = _dow
