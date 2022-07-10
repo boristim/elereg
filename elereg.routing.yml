@@ -17,10 +17,12 @@ elereg.main:
 elereg.ajax:
   path: '/elereg/ajax'
   defaults:
-    _title: 'main'
+#    _title: 'main'
     _controller: '\Drupal\elereg\Controller\EleregController::ajax'
   requirements:
     _permission: 'access content'
+  options:
+    no_cache: TRUE
 
 elereg.settings_form:
   path: '/admin/config/system/elereg'

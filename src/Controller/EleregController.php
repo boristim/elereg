@@ -184,12 +184,12 @@ class EleregController extends ControllerBase
      */
     private function generateMonth(): array
     {
-        if (!$this->settings['debug']) {
-            $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
-            if (isset($cache->data)) {
-                return $cache->data;
-            }
-        }
+//        if (!$this->settings['debug']) {
+//            $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
+//            if (isset($cache->data)) {
+//                return $cache->data;
+//            }
+//        }
         $this->getBusyTickets();
         $this->getSpecialDays();
         $weeks = [];
@@ -198,9 +198,9 @@ class EleregController extends ControllerBase
         for ($day = 0; $day < (self::SECONDS_IN_WEEK * $this->settings['weeks']); $day += self::SECONDS_IN_WEEK) {
             $weeks[] = $this->generateWeek($curTime + $day);
         }
-        if (!$this->settings['debug']) {
-            Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $weeks, time() + ($this->settings['interval'] * 59));
-        }
+//        if (!$this->settings['debug']) {
+//            Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $weeks, time() + ($this->settings['interval'] * 59));
+//        }
         return $weeks;
     }
 
@@ -243,12 +243,12 @@ class EleregController extends ControllerBase
      */
     private function getServices(): array
     {
-        if (!$this->settings['debug']) {
-            $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
-            if (isset($cache->data)) {
-                return $cache->data;
-            }
-        }
+//        if (!$this->settings['debug']) {
+//            $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
+//            if (isset($cache->data)) {
+//                return $cache->data;
+//            }
+//        }
 
         $ret = [];
         $terms = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree(self::VOC_SERVICES);
@@ -260,9 +260,9 @@ class EleregController extends ControllerBase
                 ];
             }
         }
-        if (!$this->settings['debug']) {
-            Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + ($this->settings['interval'] * 59));
-        }
+//        if (!$this->settings['debug']) {
+//            Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + ($this->settings['interval'] * 59));
+//        }
         return $ret;
     }
 
