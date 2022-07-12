@@ -1,0 +1,15 @@
+services:
+  elereg.event_subscriber:
+    class: Drupal\elereg\EventSubscriber\EleregSubscriber
+    arguments: ['@messenger']
+    tags:
+      - { name: event_subscriber }
+  elereg.commands:
+    class: Drupal\Elereg\Commands\EleregCommands
+    tags:
+      - { name: drush.command }
+
+
+  elereg.calendar:
+    class: Drupal\elereg\Calendar
+    arguments: []
