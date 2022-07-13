@@ -1,0 +1,17 @@
+services:
+  elereg.calendar:
+    class: Drupal\elereg\Calendar
+    tags:
+      - { name: elereg.calendar }
+
+  elereg.smpp:
+    class: Drupal\elereg\Smpp
+    tags:
+      - { name: elereg.smpp }
+
+  elereg.smsc_smpp:
+    class: Drupal\elereg\SMSC_SMPP
+    tags:
+      - { name: elereg.smsc_smpp }
+
+
