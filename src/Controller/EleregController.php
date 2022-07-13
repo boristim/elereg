@@ -75,6 +75,12 @@ class EleregController extends ControllerBase
 
     private function getServices(): array
     {
+        $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
+        if (isset($cache->data)) {
+            return $cache->data;
+        }
+
+
         $ret = [];
         $terms = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree(self::VOC_SERVICES);
         foreach ($terms as $term) {
@@ -85,6 +91,9 @@ class EleregController extends ControllerBase
                 ];
             }
         }
+
+        Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + 599);
+
         return $ret;
     }
 
