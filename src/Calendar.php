@@ -7,7 +7,6 @@ use Drupal;
 use DateInterval;
 
 use Drupal\Core\Datetime\DrupalDateTime;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\node\Entity\Node;
 
 /**
@@ -26,16 +25,9 @@ class Calendar
 
     private array $specialDays;
 
-    public function __construct($settings)
+    public function __construct()
     {
-        $this->settings = $settings;
-    }
-
-    /**
-     * Method description.
-     */
-    public function doSomething()
-    {
+        $this->settings = Drupal::config('elereg.settings')->getRawData();
     }
 
     private function generateDay(string $day, string $genHours = ''): array

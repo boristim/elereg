@@ -1,15 +1,17 @@
 services:
-  elereg.event_subscriber:
-    class: Drupal\elereg\EventSubscriber\EleregSubscriber
-    arguments: ['@messenger']
-    tags:
-      - { name: event_subscriber }
-  elereg.commands:
-    class: Drupal\Elereg\Commands\EleregCommands
-    tags:
-      - { name: drush.command }
-
-
   elereg.calendar:
     class: Drupal\elereg\Calendar
-    arguments: []
+    tags:
+      - { name: elereg.calendar }
+
+  elereg.smpp:
+    class: Drupal\elereg\Smpp
+    tags:
+      - { name: elereg.smpp }
+
+  elereg.smsc_smpp:
+    class: Drupal\elereg\SMSC_SMPP
+    tags:
+      - { name: elereg.smsc_smpp }
+
+

@@ -1,15 +1,6 @@
-elereg.example:
-  path: '/elereg/example'
-  defaults:
-    _title: 'Example'
-    _controller: '\Drupal\elereg\Controller\EleregController::build'
-  requirements:
-    _permission: 'access content'
-
 elereg.main:
   path: '/elereg'
   defaults:
-#    _title: 'main'
     _controller: '\Drupal\elereg\Controller\EleregController::main'
   requirements:
     _permission: 'access content'
@@ -17,7 +8,6 @@ elereg.main:
 elereg.ajax:
   path: '/elereg/ajax'
   defaults:
-#    _title: 'main'
     _controller: '\Drupal\elereg\Controller\EleregController::ajax'
   requirements:
     _permission: 'access content'
@@ -27,7 +17,15 @@ elereg.ajax:
 elereg.settings_form:
   path: '/admin/config/system/elereg'
   defaults:
-    _title: 'elereg settings'
+    _title: 'Elereg settings'
     _form: 'Drupal\elereg\Form\SettingsForm'
   requirements:
     _permission: 'administer elereg configuration'
+
+elereg.settings_sms_form:
+  path: '/admin/config/system/elereg-sms'
+  defaults:
+    _title: 'Elereg SMS settings'
+    _form: 'Drupal\elereg\Form\SettingsSmsForm'
+  requirements:
+    _permission: 'administer site configuration'

@@ -7,6 +7,8 @@ use Drupal;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\elereg\Smpp;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Drupal\node\Entity\Node;
@@ -17,12 +19,7 @@ use Drupal\node\Entity\Node;
 class EleregController extends ControllerBase
 {
 
-
     const VOC_SERVICES = 'services';
-
-    private array $settings;
-
-
 
     /**
      * Builds the response.
@@ -60,20 +57,17 @@ class EleregController extends ControllerBase
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-     * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
      */
     public function ajax(Request $request): JsonResponse
     {
         $data = [];
-        $this->settings = $this->config('elereg.settings')->getRawData();
-        $calendar = new Drupal\elereg\Calendar($this->settings);
+        $calendar = Drupal::service('elereg.calendar');
         if ($request->getMethod() == 'GET') {
             $data['dates'] = $calendar->generateMonth();
             $data['services'] = $this->getServices();
         }
         if ($request->getMethod() == 'POST') {
-            $values = (array)json_decode($request->getContent());
+            $values = json_decode($request->getContent(), true);
             $data = $this->saveRegistration($values);
         }
         return (new JsonResponse())->setData($data);
@@ -81,12 +75,11 @@ class EleregController extends ControllerBase
 
     private function getServices(): array
     {
-        //        if (!$this->settings['debug']) {
-        //            $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
-        //            if (isset($cache->data)) {
-        //                return $cache->data;
-        //            }
-        //        }
+        $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
+        if (isset($cache->data)) {
+            return $cache->data;
+        }
+
 
         $ret = [];
         $terms = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree(self::VOC_SERVICES);
@@ -98,9 +91,9 @@ class EleregController extends ControllerBase
                 ];
             }
         }
-        //        if (!$this->settings['debug']) {
-        //            Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + ($this->settings['interval'] * 59));
-        //        }
+
+        Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + 599);
+
         return $ret;
     }
 
@@ -116,7 +109,7 @@ class EleregController extends ControllerBase
         }
         try {
             $date = DrupalDateTime::createFromFormat('d.m.Y H:i:s', $values['Weeks'][0] . ' ' . $values['Hours'][0] . ':00');
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $ret['error'] = 'Плохой формат даты';
             $ret['errorMessage'] = $e->getMessage();
             $ret['status'] = 'error';
@@ -145,13 +138,18 @@ class EleregController extends ControllerBase
         $node->set('field_services', $services);
         try {
             $node->save();
-        } catch (EntityStorageException | \InvalidArgumentException $e) {
+        } catch (EntityStorageException | InvalidArgumentException $e) {
             $ret['error'] = 'Ошибка сохранения';
             $ret['errorMessage'] = $e->getMessage();
             $ret['status'] = 'error';
             return $ret;
         }
         $ret['nid'] = $node->id();
+        /**
+         * @var Smpp $smpp
+         */
+        $smpp = Drupal::service('elereg.smpp');
+        $smpp->sendMessage($node);
         return $ret;
     }
 

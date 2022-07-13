@@ -1,6 +1,13 @@
 elereg.settings_form:
-  title: 'elereg'
-  description: 'Configure elereg.'
+  title: 'Электронная регистратура'
+#  description: 'Configure elereg.'
   parent: system.admin_config_system
   route_name: elereg.settings_form
   weight: 10
+
+elereg.settings_sms_form:
+  title: 'Настройки SMS '
+#  description: 'Configure elereg'
+  parent: system.admin_config_system
+  route_name: elereg.settings_sms_form
+  weight: 20

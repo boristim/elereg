@@ -98,11 +98,6 @@ class SettingsForm extends ConfigFormBase
                 '#default_value' => $settings->get('weeks') ?: 5,
                 '#attributes' => ['min' => 1, 'max' => 6, 'step' => 1,],
             ],
-//            'debug' => [
-//                '#type' => 'checkbox',
-//                '#title' => 'Режим отладки',
-//                '#default_value' => $settings->get('debug') ?: false,
-//            ],
         ];
         $form['#attached']['library'][] = 'elereg/elereg_admin';
         return parent::buildForm($form, $form_state);

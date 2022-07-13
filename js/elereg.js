@@ -56,7 +56,7 @@
                                 break
                             case 'warning':
                                 this.alert(data['message'])
-                                window.location = '/'
+                                window.location = '?' + Math.random()
                                 break
                             case 'ok':
                             default:
