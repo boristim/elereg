@@ -71,6 +71,7 @@ class SettingsSmsForm extends ConfigFormBase
             'message' => [
                 '#type' => 'textarea',
                 '#title' => 'Сообщение',
+                '#description' => 'Возможные подстановки: %fio - ФИО, %phone - телефон, %date - дата, %time - время, %service - услуги',
                 '#required' => true,
                 '#default_value' => $settings->get('message') ?: '',
             ],
