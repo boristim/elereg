@@ -83,7 +83,6 @@ class SettingsSmsForm extends ConfigFormBase
                     'max' => 1440,
                 ],
             ],
-
             'message' => [
                 '#type' => 'textarea',
                 '#title' => 'Сообщение',

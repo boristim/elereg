@@ -61,6 +61,9 @@ class EleregController extends ControllerBase
     public function ajax(Request $request): JsonResponse
     {
         $data = [];
+        /**
+         * @var \Drupal\elereg\Calendar $calendar
+         */
         $calendar = Drupal::service('elereg.calendar');
         if ($request->getMethod() == 'GET') {
             $data['dates'] = $calendar->generateMonth();
@@ -75,11 +78,10 @@ class EleregController extends ControllerBase
 
     private function getServices(): array
     {
-        $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
-        if (isset($cache->data)) {
-            return $cache->data;
-        }
-
+        //        $cache = Drupal::cache()->get(__CLASS__ . ':' . __FUNCTION__);
+        //        if (isset($cache->data)) {
+        //            return $cache->data;
+        //        }
 
         $ret = [];
         $terms = Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree(self::VOC_SERVICES);
@@ -92,7 +94,7 @@ class EleregController extends ControllerBase
             }
         }
 
-        Drupal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + 599);
+        //        DruSpal::cache()->set(__CLASS__ . ':' . __FUNCTION__, $ret, time() + 599);
 
         return $ret;
     }
@@ -123,6 +125,9 @@ class EleregController extends ControllerBase
         $fio = mb_substr($values['fio'], 0, 254);
         $title = "$tel " . $date->format('Y-m-d H:i');
         $date->sub(new DateInterval('PT5H'));
+        if (!$this->checkForBusyRegistration($date, $ret)) {
+            return $ret;
+        }
         if (!$this->checkPhoneForOneDay($tel, $date, $ret)) {
             return $ret;
         }
@@ -160,6 +165,20 @@ class EleregController extends ControllerBase
         $ret['checkInfo'] = $result;
         if (count($result)) {
             $ret['message'] = 'На этот день вы уже зарегистрированы';
+            $ret['info'] = $result;
+            $ret['status'] = 'warning';
+            return false;
+        }
+        return true;
+    }
+
+    private function checkForBusyRegistration(DrupalDateTime $date, array &$ret): bool
+    {
+        $query = Drupal::entityQuery('node')->condition('type', 'registration')->condition('field_data', $date->format('Y-m-d H:i:s'));
+        $result = $query->execute();
+        $ret['checkInfo'] = $result;
+        if (count($result)) {
+            $ret['message'] = 'К сожалению, данное время уже занято';
             $ret['info'] = $result;
             $ret['status'] = 'warning';
             return false;
