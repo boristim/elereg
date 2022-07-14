@@ -35,8 +35,8 @@ class Smpp
         $node = Node::create(['type' => 'sms', 'title' => $title]);
         $node->set('body', $message)->set('field_phone', $phone);
         try {
-            $h24 = time() - (24 * 3600);
-            $query = Drupal::entityQuery('node')->condition('type', 'sms')->condition('created', $h24, '>')->condition('field_phone', $phone);
+            $h24 = time() - ($this->settings['period'] * 60);
+            $query = Drupal::entityQuery('node')->condition('type', 'sms')->condition('created', $h24, '>')->condition('field_phone', $phone)->condition('field_status', true);
             $result = $query->execute();
             if (!count($result)) {
                 if ($this->smsc->send_sms($phone, $message, $this->settings['sender'])) {
